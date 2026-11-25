@@ -36,6 +36,13 @@ def main() -> None:
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(ENTRY)
     os.chmod("/output/entry.txt", 0o644)
+    # Verify the round trip: what landed on disk must be exactly the
+    # validated entry, or the run has not produced a usable submission.
+    with open("/output/entry.txt", encoding="utf-8") as f:
+        written = f.read()
+    assert written == ENTRY, "written entry differs from validated entry"
+    validate(written)
+    print(f"entry written ({len(written)}/{MAX_CHARS} chars): {written}")
 
 
 if __name__ == "__main__":
